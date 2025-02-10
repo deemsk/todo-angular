@@ -1,0 +1,12 @@
+{
+  "name": "todo-angular",
+  "version": "1.0.0",
+  "description": "A full-stack to-do management app built with a Node.js (TypeScript) REST API and an Angular front end",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["typescript", "nodejs", "api", "todo", "rest"],
+  "author": "Dmitriy Bogolyubov",
+  "license": "MIT"
+}
