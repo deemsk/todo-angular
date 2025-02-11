@@ -2,11 +2,30 @@
   "name": "todo-angular",
   "version": "1.0.0",
   "description": "A full-stack to-do management app built with a Node.js (TypeScript) REST API and an Angular front end",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "type": "module",
   "scripts": {
+    "dev": "conc --kill-others pnpm:watch:server \"nodemon\"",
+    "watch:server": "tsc -w -p .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["typescript", "nodejs", "api", "todo", "rest"],
+  "keywords": [
+    "typescript",
+    "nodejs",
+    "api",
+    "todo",
+    "rest"
+  ],
   "author": "Dmitriy Bogolyubov",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^9.1.2",
+    "express": "^4.21.2",
+    "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.1",
+    "nodemon": "^3.1.9"
+  }
 }

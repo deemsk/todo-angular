@@ -1,0 +1,182 @@
+[
+  {
+    "title": "Do something nice for someone you care about",
+    "id": 1,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Memorize a poem",
+    "id": 2,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Watch a classic movie",
+    "id": 3,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Watch a documentary",
+    "id": 4,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Invest in cryptocurrency",
+    "id": 5,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Contribute code or a monetary donation to an open-source software project",
+    "id": 6,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Solve a Rubik's cube",
+    "id": 7,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Bake pastries for yourself and neighbor",
+    "id": 8,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Go see a Broadway production",
+    "id": 9,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Write a thank you letter to an influential person in your life",
+    "id": 10,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Invite some friends over for a game night",
+    "id": 11,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Have a football scrimmage with some friends",
+    "id": 12,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Text a friend you haven't talked to in a long time",
+    "id": 13,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Organize pantry",
+    "id": 14,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Buy a new house decoration",
+    "id": 15,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Plan a vacation you've always wanted to take",
+    "id": 16,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Clean out car",
+    "id": 17,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Draw and color a Mandala",
+    "id": 18,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Create a cookbook with favorite recipes",
+    "id": 19,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Bake a pie with some friends",
+    "id": 20,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Create a compost pile",
+    "id": 21,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Take a hike at a local park",
+    "id": 22,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Take a class at local community center that interests you",
+    "id": 23,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Research a topic interested in",
+    "id": 24,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Plan a trip to another country",
+    "id": 25,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Improve touch typing",
+    "id": 26,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Learn Express.js",
+    "id": 27,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Learn calligraphy",
+    "id": 28,
+    "completed": false,
+    "description": ""
+  },
+  {
+    "title": "Have a photo session with some friends",
+    "id": 29,
+    "completed": true,
+    "description": ""
+  },
+  {
+    "title": "Go to the gym",
+    "id": 30,
+    "completed": true,
+    "description": ""
+  }
+]
