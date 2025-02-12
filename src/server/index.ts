@@ -75,7 +75,7 @@ app.get(API_PREFIX, (req: Request, res: Response) => {
 
 // Get a specific todo by ID
 app.get(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params['id'], 10);
     // Full scan might take a long time when a lot of records, but for POC it's okay
     const todo = todos.find(item => item.id === id);
 
@@ -88,7 +88,7 @@ app.get(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
 
 // Update a todo's title, description, or completion status
 app.put(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params['id'], 10);
     const { title, description, completed } = req.body;
     const todo = todos.find(item => item.id === id);
 
@@ -113,7 +113,7 @@ app.put(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
 
 // Delete a todo
 app.delete(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params['id'], 10);
     const initialLength = todos.length;
     todos = todos.filter(item => item.id !== id);
     
