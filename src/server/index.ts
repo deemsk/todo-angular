@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import fs from 'node:fs';
 
 /**
@@ -41,6 +41,23 @@ const PORT = 3000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Add CORS headers
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
+    res.header(
+        'Access-Control-Allow-Methods',
+        'GET,POST,PUT,PATCH,DELETE,OPTIONS'
+    );
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+        return;
+    }
+
+    next();
+});
+
 /**
  * API routes
  */
@@ -77,7 +94,7 @@ app.get(API_PREFIX, (req: Request, res: Response) => {
 app.get(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
     const id = parseInt(req.params['id'], 10);
     // Full scan might take a long time when a lot of records, but for POC it's okay
-    const todo = todos.find(item => item.id === id);
+    const todo = todos.find((item) => item.id === id);
 
     if (!todo) {
         res.status(404).json({ error: 'Todo not found' });
@@ -90,7 +107,7 @@ app.get(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
 app.put(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
     const id = parseInt(req.params['id'], 10);
     const { title, description, completed } = req.body;
-    const todo = todos.find(item => item.id === id);
+    const todo = todos.find((item) => item.id === id);
 
     if (!todo) {
         res.status(404).json({ error: 'Todo not found' });
@@ -111,12 +128,30 @@ app.put(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
     res.json(todo);
 });
 
+// Update todo's arbitrary field
+app.patch(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
+    const id = parseInt(req.params['id'], 10);
+    const updates = req.body;
+    const todo = todos.find((item) => item.id === id);
+
+    if (!todo) {
+        res.status(404).json({ error: 'Todo not found' });
+        return;
+    }
+
+    // Merge the updates into the existing todo
+    Object.assign(todo, updates);
+
+    saveData();
+    res.json(todo);
+});
+
 // Delete a todo
 app.delete(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
     const id = parseInt(req.params['id'], 10);
     const initialLength = todos.length;
-    todos = todos.filter(item => item.id !== id);
-    
+    todos = todos.filter((item) => item.id !== id);
+
     if (todos.length === initialLength) {
         res.status(404).json({ error: 'Todo not found' });
         return;

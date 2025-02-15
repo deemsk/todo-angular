@@ -1,0 +1,27 @@
+<form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="title">Title:</label>
+        <input id="title" type="text" formControlName="title" size="100" required />
+        <!-- <div
+            *ngIf="
+                todoForm.get('title')?.invalid && todoForm.get('title')?.touched
+            "
+        >
+            Title is required.
+        </div> -->
+    </div>
+    <div>
+        <label for="description">Description:</label>
+        <textarea id="description" formControlName="description" cols="77" rows="5"></textarea>
+    </div>
+    <button type="submit" [disabled]="todoForm.invalid">
+        @if (this.mode === 'create') {
+            Create Todo
+        } @else {
+            Update Todo
+        }
+    </button>
+    @if (this.mode === 'edit') {
+        <button type="button" (click)="onDelete()">Delete Todo</button>
+    }
+</form>
