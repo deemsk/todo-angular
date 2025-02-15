@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { TodoFormComponent } from '../todo-form/todo-form.component';
-import { Todo, TodosService } from '../services/todos.service';
+import { Todo, TodosService } from '../../services/todos.service';
 import { ActivatedRoute } from '@angular/router';
+import { TodoFormComponent } from '../../components/todo-form/todo-form.component';
 
 @Component({
-    selector: 'app-todo-details',
+    selector: 'app-todo-edit',
     imports: [TodoFormComponent],
-    templateUrl: './todo-details.component.html',
-    styleUrl: './todo-details.component.scss',
+    templateUrl: './todo-edit.component.html',
+    styleUrl: './todo-edit.component.scss',
 })
-export class TodoDetailsComponent implements OnInit {
+export class TodoEditComponent implements OnInit {
     todo!: Todo;
 
     constructor(

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { TodoListComponent } from './todo-list/todo-list.component';
-import { TodoDetailsComponent } from './todo-details/todo-details.component';
-import { TodoCreateComponent } from './todo-create/todo-create.component';
+import { TodoListComponent } from './pages/todo-list/todo-list.component';
+import { TodoEditComponent } from './pages/todo-edit/todo-edit.component';
+import { TodoCreateComponent } from './pages/todo-create/todo-create.component';
 
 export const routes: Routes = [
     {
@@ -19,6 +19,6 @@ export const routes: Routes = [
     },
     {
         path: 'todos/:id',
-        component: TodoDetailsComponent,
+        component: TodoEditComponent,
     },
 ];

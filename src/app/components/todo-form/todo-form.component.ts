@@ -6,7 +6,7 @@ import {
     SimpleChanges,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Todo, TodosService } from '../services/todos.service';
+import { Todo, TodosService } from '../../services/todos.service';
 import { Router } from '@angular/router';
 
 @Component({

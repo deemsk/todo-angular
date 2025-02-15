@@ -1,0 +1,14 @@
+:root {
+    --color-form-text: #374151;               // Default text color
+    --color-form-placeholder: #9ca3af;        // Placeholder text
+    --color-form-border: #d1d5db;             // Default border
+    --color-form-border-focus: #6366f1;       // Border on focus
+    --color-form-disabled-bg: #f3f4f6;        // Background for disabled fields
+    --color-form-disabled-border: #e5e7eb;    // Border for disabled fields
+    --color-form-disabled-text: #9ca3af;      // Text color for disabled fields
+
+    /* Checkbox-Specific Colors */
+    --color-checkbox-border: #2b7fff;         // Checkbox border
+    --color-checkbox-bg: #f2f8ff;             // Checkbox fill when checked
+    --color-checkbox-hover-border: #256cd9;   // Border on hover
+}

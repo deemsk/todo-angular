@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TodoFormComponent } from '../todo-form/todo-form.component';
+import { TodoFormComponent } from '../../components/todo-form/todo-form.component';
 
 @Component({
     selector: 'app-todo-create',

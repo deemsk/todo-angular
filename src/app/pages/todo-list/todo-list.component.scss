@@ -1,0 +1,62 @@
+.todo-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    &__item {
+        margin: 0 0 0.5rem;
+        background-color: #f9fafb;
+        border-radius: 8px;
+        padding: 1rem;
+    }
+}
+
+.todo {
+    display: flex;
+    align-items: flex-start;
+    
+    &__toggle {
+        margin-right: 0.6rem;
+        margin-top: 0.1rem;
+    }
+
+    &__body {
+        flex: 1;
+
+    }
+
+    &__title {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #111827;
+    }
+
+    &_completed &__title {
+        text-decoration: line-through;
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-left: auto;
+
+        button,
+        a {
+            background-color: #e5e7eb;
+            border: none;
+            border-radius: 6px;
+            padding: 0.3rem 0.75rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-align: center;
+            color: #374151;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+                background-color: #d1d5db;
+            }
+        }
+    }
+}

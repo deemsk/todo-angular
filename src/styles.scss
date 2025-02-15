@@ -1,1 +1,119 @@
-/* You can add global styles to this file, and also import other style files */
+@import url(./variables.scss);
+
+/* Base styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+    padding: 2em;
+    background-color: #f2f2f2;
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    color: #111827;
+    line-height: 1.5;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-top: 0;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #111827;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.75rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: #4b5563; // A slightly lighter text color
+}
+
+/* Strong text */
+strong {
+    font-weight: 600;
+}
+
+/* Page header */
+.header {
+    margin: 0 0 1.25rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Checkbox */
+.checkbox {
+    display: inline;
+    font-size: 0;
+    line-height: 0;
+
+    &__input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    &__checkmark {
+        position: relative;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid var(--color-checkbox-border);
+        transition: background-color 0.1s ease;
+    }
+
+    /* When the checkbox is checked, fill the circle */
+    &__input:checked + &__checkmark {
+        border-color: var(--color-checkbox-border);
+
+        &::after {
+            content: '';
+            position: absolute;
+            left: 1px;
+            right: 1px;
+            top: 1px;
+            bottom: 1px;
+            border-radius: 50%;
+            background-color: var(--color-checkbox-border);
+        }
+    }
+
+    &__input:not(:disabled):hover + &__checkmark {
+        border-color: var(--color-checkbox-hover-border);
+
+        &::after {
+            background-color: var(--color-checkbox-hover-border);
+        }
+    }
+}
