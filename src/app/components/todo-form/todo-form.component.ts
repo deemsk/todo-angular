@@ -1,9 +1,4 @@
-import {
-    Component,
-    Input,
-    OnChanges,
-    SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Todo, TodosService } from '../../services/todos.service';
 import { Router } from '@angular/router';
@@ -70,7 +65,15 @@ export class TodoFormComponent implements OnChanges {
 
     onDelete() {
         const id = this.todoData?.id;
-        if (id) {
+
+        if (typeof id === 'undefined') {
+            return;
+        }
+
+        const confirmed = window.confirm(
+            'Are you sure you want to delete this todo? This action cannot be undone.'
+        );
+        if (confirmed) {
             this.todosService.deleteTodo(id).subscribe({
                 next: () => this.router.navigate(['/todos']),
                 error: (err) => console.error('Delete failed', err),
