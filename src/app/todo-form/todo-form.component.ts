@@ -19,7 +19,10 @@ export class TodoFormComponent implements OnChanges {
     @Input() mode: 'create' | 'edit' = 'create';
     @Input() todoData?: Todo;
 
-    constructor(private todosService: TodosService, private router: Router) {}
+    constructor(
+        private todosService: TodosService,
+        private router: Router
+    ) {}
 
     todoForm = new FormGroup({
         title: new FormControl('', { nonNullable: true }),
@@ -53,7 +56,7 @@ export class TodoFormComponent implements OnChanges {
             });
         } else if (this.todoData) {
             // Update
-            const updatedTodo = {...this.todoData, ...this.todoForm.value};
+            const updatedTodo = { ...this.todoData, ...this.todoForm.value };
             this.todosService.updateTodo(updatedTodo).subscribe({
                 next: () => {
                     // Navigate to the list view after successful creation

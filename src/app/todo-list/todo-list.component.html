@@ -5,7 +5,8 @@
         @for (todo of todos; track todo.id) {
             <li>
                 <div>
-                    <strong>{{ todo.title }}</strong>&nbsp;
+                    <strong>{{ todo.title }}</strong
+                    >&nbsp;
                     @if (todo.completed) {
                         <span style="color: green">[Completed]</span>
                     } @else {

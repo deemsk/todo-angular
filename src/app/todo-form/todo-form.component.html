@@ -15,13 +15,13 @@
         <textarea id="description" formControlName="description" cols="77" rows="5"></textarea>
     </div>
     <button type="submit" [disabled]="todoForm.invalid">
-        @if (this.mode === 'create') {
+        @if (this.mode === "create") {
             Create Todo
         } @else {
             Update Todo
         }
     </button>
-    @if (this.mode === 'edit') {
+    @if (this.mode === "edit") {
         <button type="button" (click)="onDelete()">Delete Todo</button>
     }
 </form>

@@ -20,7 +20,7 @@ export class TodoDetailsComponent implements OnInit {
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
         this.todoService.getTodo(id).subscribe({
-            next: (todo) => this.todo = todo,
+            next: (todo) => (this.todo = todo),
             error: (err) => console.error('Todo load failed', err),
         });
     }
