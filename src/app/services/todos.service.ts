@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import {
+    BehaviorSubject,
+    Observable,
+    Subject,
+    tap,
+    throwError,
+} from 'rxjs';
 
 export interface Todo {
     id: number;
@@ -20,6 +26,9 @@ export class TodosService {
     todos$ = this.todosSubject.asObservable();
 
     private readonly apiUrl = 'http://localhost:3000/api/v1/todos';
+
+    private toggleTimeouts: Record<Todo['id'], any> = {};
+    private toggleSubjects: Record<Todo['id'], Subject<Todo>> = {};
 
     constructor(private http: HttpClient) {}
 
@@ -75,24 +84,44 @@ export class TodosService {
         }
 
         const updatedTodo: Todo = { ...todo, completed: !todo.completed };
-
-        // Optimistically update the store by emitting the new array
         const updatedTodos = todos.map((todo) =>
             todo.id === id ? updatedTodo : todo
         );
+
+        // Optimistically update the store by emitting the new array
         this.todosSubject.next(updatedTodos);
 
-        return this.http
-            .patch<Todo>(`${this.apiUrl}/${id}`, {
-                completed: updatedTodo.completed,
-            })
-            .pipe(
-                catchError((error) => {
-                    // If the update fails, revert the store to its previous state
-                    this.todosSubject.next(todos);
-                    return throwError(() => error);
+        // If there's no subject for this id yet, create one.
+        if (!this.toggleSubjects[id] || this.toggleSubjects[id].closed) {
+            this.toggleSubjects[id] = new Subject<Todo>();
+        }
+
+        // Clear any existing debounce timer for this todo id
+        if (this.toggleTimeouts[id]) {
+            clearTimeout(this.toggleTimeouts[id]);
+        }
+
+        // Set a new debounce timer
+        this.toggleTimeouts[id] = setTimeout(() => {
+            this.http
+                .patch<Todo>(`${this.apiUrl}/${id}`, {
+                    completed: updatedTodo.completed,
                 })
-            );
+                .subscribe({
+                    next: (serverUpdatedTodo) => {
+                        // Emit the updated todo on the subject and complete it.
+                        this.toggleSubjects[id].next(serverUpdatedTodo);
+                        this.toggleSubjects[id].complete();
+                    },
+                    error: (err) => {
+                        this.toggleSubjects[id].error(err);
+                    },
+                });
+
+            delete this.toggleTimeouts[id];
+        }, 500);
+
+        return this.toggleSubjects[id].asObservable();
     }
 
     // Delete an existing todo
