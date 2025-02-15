@@ -26,6 +26,7 @@
     }
 
     &__title {
+        padding-right: 1rem;
         font-size: 1rem;
         font-weight: 500;
         color: #111827;
@@ -40,23 +41,5 @@
         flex-direction: column;
         gap: 0.25rem;
         margin-left: auto;
-
-        button,
-        a {
-            background-color: #e5e7eb;
-            border: none;
-            border-radius: 6px;
-            padding: 0.3rem 0.75rem;
-            font-size: 0.875rem;
-            cursor: pointer;
-            text-align: center;
-            color: #374151;
-            text-decoration: none;
-            transition: background-color 0.2s ease;
-
-            &:hover {
-                background-color: #d1d5db;
-            }
-        }
     }
 }
