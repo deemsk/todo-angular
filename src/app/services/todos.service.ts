@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {
-    BehaviorSubject,
-    Observable,
-    Subject,
-    tap,
-    throwError,
-} from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, tap, throwError } from 'rxjs';
 
 export interface Todo {
     id: number;
@@ -59,6 +53,26 @@ export class TodosService {
     // Update an existing todo
     updateTodo(todo: Todo): Observable<Todo> {
         const id = todo.id;
+        const todos = this.todosSubject.getValue();
+        const currentTodo = todos.find((todo) => todo.id === id);
+
+        if (!currentTodo) {
+            return throwError(() => new Error('Todo not found'));
+        }
+
+        todo.title = todo.title.trim();
+        todo.description = todo.description?.trim();
+
+        // Check if any of the updatable properties have actually changed
+        const hasChanged =
+            currentTodo.title !== todo.title ||
+            currentTodo.description !== todo.description;
+
+        if (!hasChanged) {
+            // No change detected, so return the current todo wrapped in an observable.
+            return of(todo);
+        }
+
         return this.http.put<Todo>(`${this.apiUrl}/${id}`, todo).pipe(
             tap((updatedTodo) => {
                 const todos = this.todosSubject.getValue();
