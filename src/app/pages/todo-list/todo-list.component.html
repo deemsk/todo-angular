@@ -1,38 +1,41 @@
-<h1 class="header">Todos</h1>
-
-<div>
-    <a routerLink="/todos/create" class="button button_size_m button_type_action">Create todo</a>
-</div>
-
-@if (todos && todos.length > 1) {
-    <ul class="todo-list">
-        @for (todo of todos; track todo.id) {
-            <li class="todo-list__item">
-
-                <div class="todo" [class.todo_completed]="todo.completed">
-                    <div class="todo__toggle">
-                        <label class="checkbox">
-                            <input
-                                type="checkbox"
-                                class="checkbox__input"
-                                [checked]="todo.completed"
-                                (change)="toggleTodo(todo.id)"
-                            />
-                            <span class="checkbox__checkmark"></span>
-                        </label>        
-                    </div>
-                    <div class="todo__body">
-                        <div class="todo__title">
-                            {{ todo.title }}
+<app-page-layout>
+    <ng-content page-title>
+        Todos
+    </ng-content>
+    <ng-content page-header-actions>
+        <a routerLink="/todos/create" class="button button_size_m button_type_action">Create todo</a>
+    </ng-content>
+    <ng-content page-content>
+        @if (todos && todos.length > 1) {
+            <ul class="todo-list">
+                @for (todo of todos; track todo.id) {
+                    <li class="todo-list__item">
+                        <div class="todo" [class.todo_completed]="todo.completed">
+                            <div class="todo__toggle">
+                                <label class="checkbox">
+                                    <input
+                                        type="checkbox"
+                                        class="checkbox__input"
+                                        [checked]="todo.completed"
+                                        (change)="toggleTodo(todo.id)"
+                                    />
+                                    <span class="checkbox__checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="todo__body">
+                                <div class="todo__title">
+                                    {{ todo.title }}
+                                </div>
+                            </div>
+                            <div class="todo__actions">
+                                <a [routerLink]="['/todos', todo.id]">Edit</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="todo__actions">
-                        <a [routerLink]="['/todos', todo.id]">Edit</a>
-                    </div>
-                </div>
-            </li>
+                    </li>
+                }
+            </ul>
+        } @else {
+            <p>No todos available.</p>
         }
-    </ul>
-} @else {
-    <p>No todos available.</p>
-}
+    </ng-content>
+</app-page-layout>

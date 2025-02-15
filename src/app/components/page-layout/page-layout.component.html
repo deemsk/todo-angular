@@ -1,0 +1,11 @@
+<header class="page-header">
+    <h1 class="page-header__title">
+        <ng-content select="[page-title]"></ng-content>
+    </h1>
+    <div class="page-header__actions">
+        <ng-content select="[page-header-actions]"></ng-content>
+    </div>
+</header>
+<main class="page-content">
+    <ng-content select="[page-content]"></ng-content>
+</main>

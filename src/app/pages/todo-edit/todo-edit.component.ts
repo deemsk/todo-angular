@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Todo, TodosService } from '../../services/todos.service';
 import { ActivatedRoute } from '@angular/router';
 import { TodoFormComponent } from '../../components/todo-form/todo-form.component';
+import { PageLayoutComponent } from '../../components/page-layout/page-layout.component';
 
 @Component({
     selector: 'app-todo-edit',
-    imports: [TodoFormComponent],
+    imports: [PageLayoutComponent, TodoFormComponent],
     templateUrl: './todo-edit.component.html',
     styleUrl: './todo-edit.component.scss',
 })

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Todo, TodosService } from '../../services/todos.service';
+import { PageLayoutComponent } from '../../components/page-layout/page-layout.component';
 import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-todo-list',
-    imports: [RouterLink],
+    imports: [RouterLink, PageLayoutComponent],
     templateUrl: './todo-list.component.html',
     styleUrl: './todo-list.component.scss',
 })

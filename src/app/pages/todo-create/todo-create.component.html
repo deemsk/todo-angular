@@ -1,3 +1,8 @@
-<h1 class="header">Create Todo</h1>
-
-<app-todo-form></app-todo-form>
+<app-page-layout>
+    <ng-content page-title>
+        Create new todo
+    </ng-content>
+    <ng-content page-content>
+        <app-todo-form mode="create"></app-todo-form>
+    </ng-content>
+</app-page-layout>
