@@ -14,7 +14,7 @@
 .todo {
     display: flex;
     align-items: flex-start;
-    
+
     &__toggle {
         margin-right: 0.6rem;
         margin-top: 0.1rem;
@@ -22,7 +22,6 @@
 
     &__body {
         flex: 1;
-
     }
 
     &__title {

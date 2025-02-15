@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, Subject, tap, throwError } from 'rxjs';
+import {
+    BehaviorSubject,
+    Observable,
+    of,
+    Subject,
+    tap,
+    throwError,
+} from 'rxjs';
 
 export interface Todo {
     id: number;

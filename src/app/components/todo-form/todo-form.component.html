@@ -18,7 +18,9 @@
         <button type="button" class="button button_type_cancel button_size_m" (click)="onCancel()">Cancel</button>
         @if (this.mode === "edit") {
             <div class="form__actions-aside">
-                <button type="button" class="button button_type_danger button_size_m" (click)="onDelete()">Delete Todo</button>
+                <button type="button" class="button button_type_danger button_size_m" (click)="onDelete()">
+                    Delete todo
+                </button>
             </div>
         }
     </div>
