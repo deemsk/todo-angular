@@ -1,27 +1,25 @@
-<form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
-    <div>
+<form class="form" [formGroup]="todoForm" (ngSubmit)="onSubmit()">
+    <div class="form__field">
         <label for="title">Title:</label>
-        <input id="title" type="text" formControlName="title" size="100" required />
-        <!-- <div
-            *ngIf="
-                todoForm.get('title')?.invalid && todoForm.get('title')?.touched
-            "
-        >
-            Title is required.
-        </div> -->
+        <input id="title" type="text" class="text" formControlName="title" size="100" required />
     </div>
-    <div>
+    <div class="form__field">
         <label for="description">Description:</label>
-        <textarea id="description" formControlName="description" cols="77" rows="5"></textarea>
+        <textarea id="description" class="textarea" formControlName="description" cols="77" rows="5"></textarea>
     </div>
-    <button type="submit" [disabled]="todoForm.invalid">
-        @if (this.mode === "create") {
-            Create Todo
-        } @else {
-            Update Todo
+    <div class="form__actions">
+        <button type="submit" class="button button_type_action button_size_m" [disabled]="todoForm.invalid">
+            @if (this.mode === "create") {
+                Create Todo
+            } @else {
+                Update Todo
+            }
+        </button>
+        <button type="button" class="button button_type_cancel button_size_m" (click)="onCancel()">Cancel</button>
+        @if (this.mode === "edit") {
+            <div class="form__actions-aside">
+                <button type="button" class="button button_type_danger button_size_m" (click)="onDelete()">Delete Todo</button>
+            </div>
         }
-    </button>
-    @if (this.mode === "edit") {
-        <button type="button" (click)="onDelete()">Delete Todo</button>
-    }
+    </div>
 </form>

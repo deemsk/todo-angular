@@ -2,7 +2,6 @@ import {
     Component,
     Input,
     OnChanges,
-    OnInit,
     SimpleChanges,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -77,5 +76,9 @@ export class TodoFormComponent implements OnChanges {
                 error: (err) => console.error('Delete failed', err),
             });
         }
+    }
+
+    onCancel() {
+        this.router.navigate(['/todos']);
     }
 }

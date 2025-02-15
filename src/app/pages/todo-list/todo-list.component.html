@@ -1,5 +1,9 @@
 <h1 class="header">Todos</h1>
 
+<div>
+    <a routerLink="/todos/create" class="button button_size_m button_type_action">Create todo</a>
+</div>
+
 @if (todos && todos.length > 1) {
     <ul class="todo-list">
         @for (todo of todos; track todo.id) {
@@ -32,7 +36,3 @@
 } @else {
     <p>No todos available.</p>
 }
-
-<div>
-    <a routerLink="/todos/create">Create New Todo</a>
-</div>

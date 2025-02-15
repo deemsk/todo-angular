@@ -70,6 +70,109 @@ strong {
     color: #111827;
 }
 
+/* Form section */
+.form {
+    margin-top: 1.5rem;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    padding: 1rem;
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+
+        & label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: start;
+        gap: 0.5rem;
+    }
+
+    &__actions-aside {
+        margin-left: auto;
+    }
+}
+
+/* Button */
+.button {
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    font: inherit;
+    cursor: pointer;
+    background-color: transparent;
+    transition: background-color, border-color, color 0.2s ease;
+    text-align: center;
+
+    /* Type modifiers */
+    &_type_action {
+        background-color: #6366f1;
+        color: #ffffff;
+
+        &:hover {
+            background-color: #4f46e5;
+        }
+    }
+    &_type_danger {
+        border: 1px solid #dd6461;
+        color: #d9534f;
+
+        &:hover {
+            border-color: #ae423f;
+            color: #ae423f;
+        }
+    }
+    &_type_cancel {
+        background-color: #f3f4f6;
+        color: #4b5563;
+
+        &:hover {
+            background-color: #e5e7eb;
+        }
+    }
+
+    /* Size modifiers */
+    &_size_s {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.65rem;
+    }
+    &_size_m {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Input & Textarea */
+.text,
+.textarea {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: normal;
+    font-style: normal;
+    color: #374151;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+        border-color: #6366f1;
+    }
+}
+.textarea {
+    resize: none;
+    min-height: 80px;
+}
+
 /* Checkbox */
 .checkbox {
     display: inline;
@@ -98,7 +201,7 @@ strong {
         border-color: var(--color-checkbox-border);
 
         &::after {
-            content: '';
+            content: "";
             position: absolute;
             left: 1px;
             right: 1px;
