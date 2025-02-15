@@ -7,6 +7,8 @@ export interface Todo {
     title: string;
     description?: string;
     completed: boolean;
+    created_at: string; // ISO string timestamp
+    updated_at: string; // ISO string timestamp
 }
 
 @Injectable({

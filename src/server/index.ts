@@ -4,11 +4,13 @@ import fs from 'node:fs';
 /**
  * Typings
  */
-interface Todo {
+export interface Todo {
     id: number;
     title: string;
     description?: string;
     completed: boolean;
+    created_at: string; // ISO string timestamp
+    updated_at: string; // ISO string timestamp
 }
 
 let todos: Todo[] = [];
@@ -72,11 +74,14 @@ app.post(API_PREFIX, (req: Request, res: Response) => {
         return;
     }
 
+    const datetime = new Date().toISOString();
     const newTodo: Todo = {
         id: Date.now(), // using timestamp as a simple unique ID
         title,
         description,
         completed: false,
+        created_at: datetime,
+        updated_at: datetime,
     };
 
     todos.push(newTodo);
@@ -87,7 +92,12 @@ app.post(API_PREFIX, (req: Request, res: Response) => {
 
 // Get all todos
 app.get(API_PREFIX, (req: Request, res: Response) => {
-    res.json(todos);
+    // Sort by updated_at descending (most recent first)
+    const sortedTodos = [...todos].sort(
+        (a, b) =>
+            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+    );
+    res.json(sortedTodos);
 });
 
 // Get a specific todo by ID
@@ -106,11 +116,19 @@ app.get(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
 // Update a todo's title, description, or completion status
 app.put(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
     const id = parseInt(req.params['id'], 10);
-    const { title, description, completed } = req.body;
+    const { title, description, completed, updated_at } = req.body;
     const todo = todos.find((item) => item.id === id);
 
     if (!todo) {
         res.status(404).json({ error: 'Todo not found' });
+        return;
+    }
+
+    // Conflict detection: if the submitted updated_at doesn't match current value
+    if (updated_at && updated_at !== todo.updated_at) {
+        res.status(409).json({
+            error: 'Todo has been modified by another user',
+        });
         return;
     }
 
@@ -123,6 +141,7 @@ app.put(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
     if (completed !== undefined) {
         todo.completed = completed;
     }
+    todo.updated_at = new Date().toISOString();
 
     saveData();
     res.json(todo);
