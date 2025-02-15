@@ -1,6 +1,7 @@
 <app-page-layout>
     <ng-content page-title>
         Todos
+        <span class="label">{{ todos.length }}</span>
     </ng-content>
     <ng-content page-header-actions>
         <a routerLink="/todos/create" class="button button_size_m button_type_action">Create todo</a>
