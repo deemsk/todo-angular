@@ -5,13 +5,14 @@
     "main": "dist/out-tsc/server/index.js",
     "type": "module",
     "scripts": {
-        "dev": "conc --kill-others pnpm:watch:server \"nodemon\"",
+        "dev": "conc --kill-others pnpm:watch:server \"nodemon\" pnpm:start",
         "watch:server": "tsc -w -p .",
         "ng": "ng",
         "start": "ng serve",
         "build": "ng build",
         "watch:client": "ng build --watch --configuration development",
-        "test": "ng test"
+        "test": "ng test",
+        "format": "pnpm prettier --write 'src/**/*.{ts,json,scss,md,html}'"
     },
     "keywords": [
         "typescript",
