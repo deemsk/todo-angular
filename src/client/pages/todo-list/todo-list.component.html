@@ -7,7 +7,7 @@
         <a routerLink="/todos/create" class="button button_size_m button_type_action">Create todo</a>
     </ng-content>
     <ng-content page-content>
-        @if (todos && todos.length > 1) {
+        @if (todos && todos.length > 0) {
             <ul class="todo-list">
                 @for (todo of todos; track todo.id) {
                     <li class="todo-list__item">
