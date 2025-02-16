@@ -34,11 +34,27 @@ export class TodosService {
 
     constructor(private http: HttpClient) {}
 
+    // Utility: sort todos by created_at in descending order (newest first)
+    private sortTodos(todos: Todo[]): Todo[] {
+        return todos.sort(
+            (a, b) =>
+                new Date(b.created_at).getTime() -
+                new Date(a.created_at).getTime()
+        );
+    }
+
     // Fetch all todos (paging?)
     getTodos(): Observable<Todo[]> {
         return this.http.get<Todo[]>(this.apiUrl).pipe(
-            tap((todos) => {
-                this.todosSubject.next(todos);
+            tap((serverTodos) => {
+                // Preserve any optimistic todos already in the local store (assumed to have negative IDs)
+                const currentTodos = this.todosSubject.getValue();
+                const optimisticTodos = currentTodos.filter(
+                    (todo) => todo.id < 0
+                );
+                // Merge server todos with optimistic todos
+                const mergedTodos = [...serverTodos, ...optimisticTodos];
+                this.todosSubject.next(this.sortTodos(mergedTodos));
             })
         );
     }
@@ -58,7 +74,7 @@ export class TodosService {
                         todo.id === id ? fetchedTodo : todo
                     );
                 }
-                this.todosSubject.next(updatedTodos);
+                this.todosSubject.next(this.sortTodos(updatedTodos));
             })
         );
     }
@@ -81,7 +97,9 @@ export class TodosService {
 
         // Update the local store immediately
         const currentTodos = this.todosSubject.getValue();
-        this.todosSubject.next([...currentTodos, optimisticTodo]);
+        this.todosSubject.next(
+            this.sortTodos([...currentTodos, optimisticTodo])
+        );
 
         // Make the API call
         return this.http.post<Todo>(this.apiUrl, todo).pipe(
@@ -90,14 +108,14 @@ export class TodosService {
                 const updatedTodos = this.todosSubject
                     .getValue()
                     .map((todo) => (todo.id === tempId ? serverTodo : todo));
-                this.todosSubject.next(updatedTodos);
+                this.todosSubject.next(this.sortTodos(updatedTodos));
             }),
             // On error, remove the optimistic todo from the local store
             catchError((err) => {
                 const updatedTodos = this.todosSubject
                     .getValue()
                     .filter((todo) => todo.id !== tempId);
-                this.todosSubject.next(updatedTodos);
+                this.todosSubject.next(this.sortTodos(updatedTodos));
                 return throwError(() => err);
             })
         );
@@ -134,7 +152,7 @@ export class TodosService {
                 );
                 if (index !== -1) {
                     todos[index] = updatedTodo;
-                    this.todosSubject.next([...todos]);
+                    this.todosSubject.next(this.sortTodos([...todos]));
                 }
             })
         );
@@ -156,7 +174,7 @@ export class TodosService {
         );
 
         // Optimistically update the store by emitting the new array
-        this.todosSubject.next(updatedTodos);
+        this.todosSubject.next(this.sortTodos(updatedTodos));
 
         // If there's no subject for this id yet, create one.
         if (!this.toggleSubjects[id] || this.toggleSubjects[id].closed) {
@@ -201,7 +219,7 @@ export class TodosService {
             tap(() => {
                 // Update the local store: remove the deleted todo
                 const updatedTodos = todos.filter((todo) => todo.id !== id);
-                this.todosSubject.next(updatedTodos);
+                this.todosSubject.next(this.sortTodos(updatedTodos));
             })
         );
     }

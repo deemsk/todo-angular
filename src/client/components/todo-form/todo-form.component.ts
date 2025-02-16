@@ -40,14 +40,12 @@ export class TodoFormComponent implements OnChanges {
         if (this.mode === 'create') {
             // Create
             this.todosService.createTodo(this.todoForm.value).subscribe({
-                next: (createdTodo) => {
-                    // Navigate to the list view after successful creation
-                    this.router.navigate(['/todos']);
-                },
                 error: (err) => {
                     console.error('Error creating todo:', err);
                 },
             });
+            // Navigate to the list view
+            this.router.navigate(['/todos']);
         } else if (this.todoData) {
             // Update
             const updatedTodo = { ...this.todoData, ...this.todoForm.value };
