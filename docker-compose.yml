@@ -5,9 +5,25 @@ services:
         build: .
         environment:
             NODE_ENV: production
+            DATABASE_HOST: db
         ports:
             - '4200:4200'
             - '3000:3000'
-        volumes:
-            - ./data:/opt/app/data
+        depends_on:
+            - db
         restart: always
+
+    db:
+        image: postgres:17
+        environment:
+            POSTGRES_USER: appuser
+            POSTGRES_PASSWORD: todoAppAngular123
+            POSTGRES_DB: app
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        ports:
+            - '5432:5432'
+        restart: always
+
+volumes:
+    pgdata:

@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import fs from 'node:fs';
+import { pool } from './db.js';
 
 /**
  * Typings
@@ -12,30 +12,6 @@ export interface Todo {
     created_at: string; // ISO string timestamp
     updated_at: string; // ISO string timestamp
 }
-
-let todos: Todo[] = [];
-const STORAGE_FILE_PATH = './data/todos.json';
-
-/**
- * To keep it simple, I'll be using a json-file as a persistent storage
- */
-function loadData() {
-    if (fs.existsSync(STORAGE_FILE_PATH)) {
-        const data = fs.readFileSync(STORAGE_FILE_PATH, 'utf-8');
-        try {
-            todos = JSON.parse(data);
-        } catch (error) {
-            console.error('Error parsing todos.json:', error);
-            todos = [];
-        }
-    }
-}
-
-function saveData() {
-    fs.writeFileSync(STORAGE_FILE_PATH, JSON.stringify(todos));
-}
-
-loadData();
 
 const app = express();
 const PORT = 3000;
@@ -66,118 +42,175 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 const API_PREFIX = '/api/v1/todos';
 
 // Create a new todo
-app.post(API_PREFIX, (req: Request, res: Response) => {
-    const { title = '', description = '' } = req.body;
+app.post(API_PREFIX, async (req: Request, res: Response) => {
+    const { title, description = '' } = req.body;
 
     if (!title) {
         res.status(400).json({ error: 'Title is required' });
         return;
     }
 
-    const datetime = new Date().toISOString();
-    const newTodo: Todo = {
-        id: Date.now(), // using timestamp as a simple unique ID
-        title,
-        description,
-        completed: false,
-        created_at: datetime,
-        updated_at: datetime,
-    };
-
-    todos.push(newTodo);
-    saveData();
-
-    res.status(201).json(newTodo);
+    try {
+        const result = await pool.query(
+            `INSERT INTO todos (title, description)
+             VALUES ($1, $2) RETURNING *`,
+            [title, description]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error('Error creating todo:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 // Get all todos
-app.get(API_PREFIX, (req: Request, res: Response) => {
-    // Sort by updated_at descending (most recent first)
-    const sortedTodos = [...todos].sort(
-        (a, b) =>
-            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-    );
-    res.json(sortedTodos);
+app.get(API_PREFIX, async (req: Request, res: Response) => {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM todos ORDER BY created_at DESC`
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching todos:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 // Get a specific todo by ID
-app.get(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
+app.get(`${API_PREFIX}/:id`, async (req: Request, res: Response) => {
     const id = parseInt(req.params['id'], 10);
-    // Full scan might take a long time when a lot of records, but for POC it's okay
-    const todo = todos.find((item) => item.id === id);
 
-    if (!todo) {
-        res.status(404).json({ error: 'Todo not found' });
+    try {
+        const result = await pool.query('SELECT * FROM todos WHERE id = $1', [
+            id,
+        ]);
+
+        if (result.rowCount === 0) {
+            res.status(404).json({ error: 'Todo not found' });
+            return;
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('Error fetching todo:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    res.json(todo);
 });
 
 // Update a todo's title, description, or completion status
-app.put(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
+app.put(`${API_PREFIX}/:id`, async (req: Request, res: Response) => {
     const id = parseInt(req.params['id'], 10);
-    const { title, description, completed, updated_at } = req.body;
-    const todo = todos.find((item) => item.id === id);
+    const {
+        title,
+        description,
+        completed,
+        updated_at: clientUpdatedAt,
+    } = req.body;
 
-    if (!todo) {
-        res.status(404).json({ error: 'Todo not found' });
-        return;
-    }
-
-    // Conflict detection: if the submitted updated_at doesn't match current value
-    if (updated_at && updated_at !== todo.updated_at) {
-        res.status(409).json({
-            error: 'Todo has been modified by another user',
+    if (!clientUpdatedAt) {
+        res.status(400).json({
+            error: 'Updated_at timestamp is required for concurrency control',
         });
         return;
     }
 
-    if (title) {
-        todo.title = title;
-    }
-    if (description !== undefined) {
-        todo.description = description;
-    }
-    if (completed !== undefined) {
-        todo.completed = completed;
-    }
-    todo.updated_at = new Date().toISOString();
+    try {
+        const newUpdatedAt = new Date().toISOString();
+        const result = await pool.query(
+            `UPDATE todos
+             SET title = $1,
+                 description = $2,
+                 completed = $3,
+                 updated_at = $4
+             WHERE id = $5 AND updated_at = $6
+             RETURNING *`,
+            [title, description, completed, newUpdatedAt, id, clientUpdatedAt]
+        );
 
-    saveData();
-    res.json(todo);
+        if (result.rowCount === 0) {
+            res.status(409).json({
+                error: 'Todo has been modified by another user',
+            });
+            return;
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('Error updating todo:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 // Update todo's arbitrary field
-app.patch(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
+app.patch(`${API_PREFIX}/:id`, async (req: Request, res: Response) => {
     const id = parseInt(req.params['id'], 10);
     const updates = req.body;
-    const todo = todos.find((item) => item.id === id);
 
-    if (!todo) {
-        res.status(404).json({ error: 'Todo not found' });
+    // Check if any updates were provided
+    if (!updates || Object.keys(updates).length === 0) {
+        res.status(400).json({ error: 'No updates provided' });
         return;
     }
 
-    // Merge the updates into the existing todo
-    Object.assign(todo, updates);
+    // Build the dynamic SET clause from the keys in the updates object.
+    // We skip the "id" field if it's present.
+    const setClauses: string[] = [];
+    const values: any[] = [];
+    let i = 1;
+    for (const key in updates) {
+        if (
+            Object.prototype.hasOwnProperty.call(updates, key) &&
+            key !== 'id'
+        ) {
+            setClauses.push(`${key} = $${i}`);
+            values.push(updates[key]);
+            i++;
+        }
+    }
 
-    saveData();
-    res.json(todo);
+    // Always update the updated_at field to the current timestamp.
+    setClauses.push(`updated_at = $${i}`);
+    values.push(new Date().toISOString());
+    i++;
+
+    // Prepare the final query using a parameterized query.
+    // The WHERE clause checks the id.
+    const query = `UPDATE todos SET ${setClauses.join(', ')} WHERE id = $${i} RETURNING *`;
+    values.push(id);
+
+    try {
+        const result = await pool.query(query, values);
+        if (result.rowCount === 0) {
+            res.status(404).json({ error: 'Todo not found' });
+            return;
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('Error updating todo:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 // Delete a todo
-app.delete(`${API_PREFIX}/:id`, (req: Request, res: Response) => {
+app.delete(`${API_PREFIX}/:id`, async (req: Request, res: Response) => {
     const id = parseInt(req.params['id'], 10);
-    const initialLength = todos.length;
-    todos = todos.filter((item) => item.id !== id);
 
-    if (todos.length === initialLength) {
-        res.status(404).json({ error: 'Todo not found' });
-        return;
+    try {
+        const result = await pool.query('DELETE FROM todos WHERE id = $1', [
+            id,
+        ]);
+
+        if (result.rowCount === 0) {
+            res.status(404).json({ error: 'Todo not found' });
+            return;
+        }
+
+        // Return 204 No Content on successful deletion.
+        res.status(204).send();
+    } catch (err) {
+        console.error('Error deleting todo:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    saveData();
-    res.status(204).send();
 });
 
 /**

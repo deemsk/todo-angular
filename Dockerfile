@@ -4,12 +4,6 @@ ENV APP_USER=app
 ENV APP_DIR=/opt/app
 ENV NODE_ENV=production
 
-RUN apt-get update && apt-get install -y \
-    vim \
-    postgresql && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
 RUN npm install --ignore-scripts --global --fund=false --loglevel=error pnpm
 
 WORKDIR ${APP_DIR}
@@ -31,4 +25,4 @@ RUN chown -R ${APP_USER}:${APP_USER} ${APP_DIR}
 
 USER ${APP_USER}
 
-CMD ["./scripts/entrypoint.sh"]
+ENTRYPOINT ["pnpm", "start"]
