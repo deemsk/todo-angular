@@ -44,7 +44,22 @@ export class TodosService {
 
     // Fetch single todo
     getTodo(id: Todo['id']): Observable<Todo> {
-        return this.http.get<Todo>(`${this.apiUrl}/${id}`);
+        return this.http.get<Todo>(`${this.apiUrl}/${id}`).pipe(
+            tap((fetchedTodo) => {
+                const todos = this.todosSubject.getValue();
+                let updatedTodos;
+                // If the todo is not already in the local store, add it.
+                if (!todos.find((todo) => todo.id === id)) {
+                    updatedTodos = [...todos, fetchedTodo];
+                } else {
+                    // Otherwise, update the existing todo with the latest data.
+                    updatedTodos = todos.map((todo) =>
+                        todo.id === id ? fetchedTodo : todo
+                    );
+                }
+                this.todosSubject.next(updatedTodos);
+            })
+        );
     }
 
     // Create a new todo
