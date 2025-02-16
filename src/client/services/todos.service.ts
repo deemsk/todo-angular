@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
     BehaviorSubject,
+    catchError,
     Observable,
     of,
     Subject,
@@ -64,10 +65,40 @@ export class TodosService {
 
     // Create a new todo
     createTodo(todo: Partial<Todo>): Observable<Todo> {
+        // Generate a temporary ID. Here, we use a negative timestamp to avoid conflict with real IDs
+        const tempId = -Date.now();
+        const now = new Date().toISOString();
+
+        // Build an optimistic Todo with default values
+        const optimisticTodo: Todo = {
+            id: tempId,
+            title: todo.title || '',
+            description: todo.description || '',
+            completed: false,
+            created_at: now,
+            updated_at: now,
+        };
+
+        // Update the local store immediately
+        const currentTodos = this.todosSubject.getValue();
+        this.todosSubject.next([...currentTodos, optimisticTodo]);
+
+        // Make the API call
         return this.http.post<Todo>(this.apiUrl, todo).pipe(
-            tap((newTodo) => {
-                const todos = this.todosSubject.getValue();
-                this.todosSubject.next([...todos, newTodo]);
+            tap((serverTodo) => {
+                // Replace the optimistic todo with the server response
+                const updatedTodos = this.todosSubject
+                    .getValue()
+                    .map((todo) => (todo.id === tempId ? serverTodo : todo));
+                this.todosSubject.next(updatedTodos);
+            }),
+            // On error, remove the optimistic todo from the local store
+            catchError((err) => {
+                const updatedTodos = this.todosSubject
+                    .getValue()
+                    .filter((todo) => todo.id !== tempId);
+                this.todosSubject.next(updatedTodos);
+                return throwError(() => err);
             })
         );
     }
