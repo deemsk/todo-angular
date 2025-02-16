@@ -12,13 +12,16 @@ export const routes: Routes = [
     {
         path: 'todos',
         component: TodoListComponent,
+        data: { title: 'Todos' },
     },
     {
         path: 'todos/create',
         component: TodoCreateComponent,
+        data: { title: 'Create new todo' },
     },
     {
         path: 'todos/:id',
         component: TodoEditComponent,
+        data: { title: 'Edit todo' }
     },
 ];
