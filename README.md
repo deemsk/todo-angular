@@ -45,31 +45,31 @@ Ensure you have the following installed:
 - 📦 pnpm
 - 🐳 Docker
 
-### ⚙️ Installation
-Clone the repository and install dependencies:
+# Running the Todo App with Docker Compose
+The project consists of an Angular client, a Node.js/Express backend API, and a PostgreSQL database for persistent storage.
+
+## Prerequisites
+
+- [Docker](https://www.docker.com/) and Docker Compose installed on your system.
+- `psql` utility to connect to the PostgreSQL database from the console
+
+## Running the app
+- Clone the repository:
 ```sh
   git clone git@github.com:deemsk/todo-angular.git
   cd todo-angular
-  pnpm install
 ```
-
-### 🚀 Running the Application
-Start the development server:
-```sh
-  pnpm run dev
+- From the project root, run:
+```bash
+docker-compose up --build
 ```
-For production mode:
-```sh
-  pnpm start
+- Connect to the database to create an initial structure:
+```bash
+psql -h localhost -p 5432 -U appuser -d app
 ```
-
-### 🐳 Running with Docker
-```sh
-  docker-compose up --build
+Enter password (password is stored in [this file](https://github.com/deemsk/todo-angular/blob/d29f97c26b39556a0ea88456e4bd83e1716f412a/src/server/db.ts#L8))
+- Execute the script:
+```sql
+\i script/init.sql
 ```
-
-### 🧪 Running Tests
-Run unit and integration tests:
-```sh
-  pnpm test
-```
+- Open http://localhost:4200/ in your browser
