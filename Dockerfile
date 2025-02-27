@@ -1,12 +1,9 @@
-FROM node:lts
-
-ENV APP_USER=app
-ENV APP_DIR=/opt/app
+FROM node:lts-alpine AS build
 ENV NODE_ENV=production
 
 RUN npm install --ignore-scripts --global --fund=false --loglevel=error pnpm
 
-WORKDIR ${APP_DIR}
+WORKDIR /app
 
 COPY pnpm-lock.yaml ./
 RUN pnpm fetch
@@ -20,9 +17,19 @@ RUN pnpm run --loglevel=error build:server
 RUN pnpm run --loglevel=error build:client
 RUN pnpm prune --prod
 
-RUN useradd -m ${APP_USER}
-RUN chown -R ${APP_USER}:${APP_USER} ${APP_DIR}
 
+FROM node:lts-alpine
+ENV APP_USER=app
+ENV APP_DIR=/app
+
+RUN addgroup -S ${APP_USER} && adduser -H -S ${APP_USER} -G ${APP_USER}
+
+WORKDIR ${APP_DIR}
+COPY --from=build ${APP_DIR}/node_modules ./node_modules
+COPY --from=build ${APP_DIR}/scripts ./scripts
+COPY --from=build ${APP_DIR}/dist ./dist
+
+RUN chown -R ${APP_USER}:${APP_USER} ${APP_DIR}
 USER ${APP_USER}
 
-ENTRYPOINT ["pnpm", "start"]
+ENTRYPOINT [ "./scripts/entrypoint.sh" ]
